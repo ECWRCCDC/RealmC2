@@ -4,9 +4,6 @@ services:
     container_name: tavern
     networks:
       - realm_proxy
-    ports:
-      - "8080:8080"
-      - "8081:80"
     volumes:
       - ./tmp:/tmp/
     environment:
@@ -25,6 +22,7 @@ services:
       - "80:80"
       - "443:443"
       - "443:443/udp"
+      - "8080:8080"
     volumes:
       - $PWD/caddy/conf:/etc/caddy
       - $PWD/caddy/site:/srv
