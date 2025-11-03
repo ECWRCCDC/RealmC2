@@ -7,6 +7,7 @@
     handle {
         basicauth {
 	    # Generate password with caddy hash-password --plaintext 'yourpassword'
+	    # The below line should look like: user asdvoiajse99wu30pf9j23f02jfjnslvkjew09
             {USER} {PASSWORD BCRYPT}
         }
         reverse_proxy tavern:80
