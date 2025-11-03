@@ -1,0 +1,18 @@
+services:
+  tavern:
+    image: tavern
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    container_name: tavern
+    ports:
+      - "8080:8080"
+      - "8081:80"
+    # volumes:
+      # - ./tmp:/tmp/
+    # command: ls -al /tmp
+    environment:
+      - GO_ENV=production
+      - SECRETS_FILE_PATH=/tmp/secrets
+      - ENABLE_DEBUG_LOGGING=true
+
