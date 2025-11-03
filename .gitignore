@@ -43,4 +43,7 @@ implants/golem/embed_files_golem_prod/*
 .venv
 *.tfvars
 tmp/*
-caddy/*
+caddy/caddy_config/*
+caddy/caddy_data/*
+caddy/conf/*
+caddy/site/*

@@ -1,0 +1,14 @@
+# Place this in the caddy/conf directory
+:80 {
+    handle_path /grpc* {
+        reverse_proxy tavern:80
+    }
+
+    handle {
+        basicauth {
+	    # Generate password with caddy hash-password --plaintext 'yourpassword'
+            {USER} {PASSWORD BCRYPT}
+        }
+        reverse_proxy tavern:80
+    }
+}
