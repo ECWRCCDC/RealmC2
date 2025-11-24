@@ -236,6 +236,11 @@ resource "google_project_iam_member" "tavern-logwriter-binding" {
   member  = "serviceAccount:${google_service_account.svctavern.email}"
 }
 
+resource "google_project_iam_member" "tavern-pubsub-binding" {
+  project = var.gcp_project
+  role    = "roles/pubsub.editor"
+  member  = "serviceAccount:${google_service_account.svctavern.email}"
+}
 
 resource "google_pubsub_topic" "shell_input" {
   count = var.disable_gcp_pubsub ? 0 : 1
@@ -276,7 +281,7 @@ resource "google_cloud_run_service" "tavern" {
         image = var.tavern_container_image
 
         ports {
-          container_port = 80
+          container_port = 8000
         }
         env {
           name = "MYSQL_NET"
@@ -402,6 +407,7 @@ resource "google_cloud_run_service" "tavern" {
     google_secret_manager_secret_iam_binding.tavern-secrets-write-binding,
     google_project_iam_member.tavern-metricwriter-binding,
     google_project_iam_member.tavern-logwriter-binding,
+    google_project_iam_member.tavern-pubsub-binding,
     google_project_service.cloud_run_api,
     google_project_service.cloud_sqladmin_api,
     google_sql_user.tavern-user,
@@ -432,11 +438,7 @@ resource "google_cloud_run_domain_mapping" "tavern-domain" {
   }
 }
 
-data "external" "pubkey" {
-  count = var.oauth_domain == "" ? 0 : 1
-  program = ["bash", "${path.module}/../bin/getpubkey.sh", google_cloud_run_domain_mapping.tavern-domain[count.index].name]
-}
 
 output "pubkey" {
-  value = var.oauth_domain == "" ? "Unable to get pubkey automatically" : "export IMIX_SERVER_PUBKEY=\"${lookup(data.external.pubkey[0].result, "Pubkey")}\""
+  value = var.oauth_domain == "" ? "Unable to get pubkey automatically" : "bash ${path.module}/../bin/getpubkey.sh https://${google_cloud_run_domain_mapping.tavern-domain[0].name}"
 }
