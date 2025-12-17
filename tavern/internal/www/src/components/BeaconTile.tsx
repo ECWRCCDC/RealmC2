@@ -1,20 +1,10 @@
+import { BeaconNode, TagEdge } from "../utils/interfacesQuery";
 import { checkIfBeaconOffline } from "../utils/utils";
 import Badge from "./tavern-base-ui/badge/Badge";
+import { Globe, Network } from "lucide-react";
 
 type Props = {
-    beaconData: {
-        name: string;
-        lastSeenAt: string;
-        interval: number;
-        principal?: string;
-        host: {
-            id: string;
-            tags?: Array<any>;
-            name: string;
-            primaryIP?: string;
-            platform?: string;
-        }
-    }
+    beaconData: BeaconNode
 }
 const BeaconTile = (props: Props) => {
     const { beaconData } = props;
@@ -27,10 +17,15 @@ const BeaconTile = (props: Props) => {
                     <Badge>{beaconData.principal}</Badge>
                 }
                 <Badge>{beaconData?.host?.name}</Badge>
-                <Badge>{beaconData?.host?.primaryIP}</Badge>
+                {beaconData?.host?.primaryIP && (
+                    <Badge leftIcon={<Network className="h-3 w-3" />}>{beaconData?.host?.primaryIP}</Badge>
+                )}
+                {beaconData?.host?.externalIP && (
+                    <Badge leftIcon={<Globe className="h-3 w-3" />}>{beaconData?.host?.externalIP}</Badge>
+                )}
                 <Badge>{beaconData?.host?.platform}</Badge>
-                {beaconData?.host?.tags && beaconData?.host?.tags.map((tag: any) => {
-                    return <Badge key={tag.id}>{tag.name}</Badge>
+                {beaconData?.host?.tags && beaconData?.host?.tags?.edges.map((tag: TagEdge) => {
+                    return <Badge key={tag.node.id}>{tag.node.name}</Badge>
                 })}
                 {beaconOffline && <Badge>Offline</Badge>}
             </div>
